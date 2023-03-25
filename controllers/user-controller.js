@@ -1,6 +1,6 @@
 const { User, Thought } = require('../models');
 
-module.exports = {
+const userController = {
     // Get api/users
     async getAllUsers(req, res) {
         try {
@@ -71,9 +71,37 @@ module.exports = {
             }
 
             const friend = await User.findByIdAndUpdate({_id: req.params.friendId}, {$push: {friends: req.params.friendId}}, {new: true});
+            if (!friend) {
+                res.status(404).json({message: "I'm sorry Dave, I'm afraid I can't do that !"});
+                return;
+            }
+            res.status(200).json(user);
         } catch (err) {
             res.status(400).json({message: "I'm sorry Dave, I'm afraid I can't do that !"});
         }
     },
+
+    // Delete api/users/:userId/friends/:friendId
+    async deleteFriend(req, res) {
+        try{
+            const user = await User.findByIdAndUpdate({_id: req.params.userId}, {$pull: {friends: req.params.friendId}}, {new: true});
+            if (!user) {
+                res.status(404).json({message: "I'm sorry Dave, I'm afraid I can't do that !"});
+                return;
+            }
+
+            const friend = await User.findByIdAndUpdate({_id: req.params.friendId}, {$pull: {friends: req.params.friendId}}, {new: true});  
+            if (!friend) {
+                res.status(404).json({message: "I'm sorry Dave, I'm afraid I can't do that !"});
+                return;
+            }
+            res.status(200).json({message: "Bye, Felicia"});
+        } catch (err) {
+            res.status(400).json({message: "I'm sorry Dave, I'm afraid I can't do that !"});
+        }
+
+    }
 };
 
+
+module.exports = userController;
