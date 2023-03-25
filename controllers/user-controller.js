@@ -66,13 +66,13 @@ const userController = {
         try{ 
             const user = await User.findByIdAndUpdate({_id: req.params.userId}, {$push: {friends: req.params.friendId}}, {new: true});
             if (!user) {
-                res.status(404).json({message: "I'm sorry Dave, I'm afraid I can't do that !"});
+                res.status(404).json({message: "I'm sorry Dave, there is no user !"});
                 return;
             }
 
             const friend = await User.findByIdAndUpdate({_id: req.params.friendId}, {$push: {friends: req.params.friendId}}, {new: true});
             if (!friend) {
-                res.status(404).json({message: "I'm sorry Dave, I'm afraid I can't do that !"});
+                res.status(404).json({message: "I'm sorry Dave, there is no friend !"});
                 return;
             }
             res.status(200).json(user);
