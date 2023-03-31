@@ -32,15 +32,29 @@ const ReactionSchema = new Schema({
 });
 
 const ThoughtSchema = new Schema({
+    thoughtText: {
+        type: String,
+        required: true,
+        minLength: 1,
+        maxLength: 280
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+        get: (timestamp) => {
+          const date = new Date(timestamp);
+          const month = date.getMonth() + 1;
+          const day = date.getDate();
+          const year = date.getFullYear();
+          return `${month}/${day}/${year}`;
+        },
+      },
+      username: {
+        type: String,
+        required: true
+      },
  
     reactions: [ReactionSchema]
-},
-{
-    toJSON: {
-        virtuals: true,
-        getters: true
-    },
-    id: false
 });
 
 ThoughtSchema.virtual('reactionCount').get(function() {
